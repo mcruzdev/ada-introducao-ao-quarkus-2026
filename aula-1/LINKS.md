@@ -19,6 +19,7 @@ https://excalidraw.com/#json=nK8g8zbY2mWZQmyuM4U3z,klUvIfqE-taOWAinzPD7Bw
 * Git 
 * Postman
 * WSL2 para Windows (Boa opção para quem usa Windows)
+* IntelliJ (Preferível)
 
 ## Sugestão de extensões para VSCode
 
