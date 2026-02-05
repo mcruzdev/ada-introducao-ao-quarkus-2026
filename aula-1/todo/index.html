@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Todo List</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+  <div class="bg-white shadow-lg rounded-lg w-full max-w-md p-6">
+    <h1 class="text-2xl font-bold text-center mb-4">
+      Caixa TODO List
+    </h1>
+
+    <!-- Form -->
+    <form id="todo-form" class="flex gap-2 mb-4">
+      <input
+        id="todo-input"
+        type="text"
+        placeholder="Nova tarefa..."
+        class="flex-1 border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+        required
+      />
+      <button
+        type="submit"
+        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+      >
+        Adicionar
+      </button>
+    </form>
+
+    <!-- Lista -->
+    <ul id="todo-list" class="space-y-2"></ul>
+  </div>
+
+  <script>
+    const form = document.getElementById("todo-form");
+    const input = document.getElementById("todo-input");
+    const list = document.getElementById("todo-list");
+
+    let todos = JSON.parse(localStorage.getItem("todos")) || [
+      {
+        id: 1,
+        text: 'Estudar Quarkus',
+        done: false,
+      }
+    ];
+
+    function saveTodos() {
+      localStorage.setItem("todos", JSON.stringify(todos));
+    }
+
+    function renderTodos() {
+      list.innerHTML = "";
+
+      todos.forEach((todo, index) => {
+        const li = document.createElement("li");
+        li.className =
+          "flex items-center justify-between bg-gray-50 border rounded px-3 py-2";
+
+        const text = document.createElement("span");
+        text.textContent = todo.text;
+        text.className = todo.done
+          ? "line-through text-gray-400"
+          : "text-gray-800 cursor-pointer";
+
+        text.onclick = () => {
+          todos[index].done = !todos[index].done;
+          saveTodos();
+          renderTodos();
+        };
+
+        const button = document.createElement("button");
+        button.textContent = "✕";
+        button.className =
+          "text-red-500 hover:text-red-700 font-bold ml-2";
+        button.onclick = () => {
+          todos.splice(index, 1);
+          saveTodos();
+          renderTodos();
+        };
+
+        li.appendChild(text);
+        li.appendChild(button);
+        list.appendChild(li);
+      });
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      todos.push({
+        text: input.value,
+        done: false,
+      });
+
+      input.value = "";
+      saveTodos();
+      renderTodos();
+    });
+
+    renderTodos();
+  </script>
+</body>
+</html>
