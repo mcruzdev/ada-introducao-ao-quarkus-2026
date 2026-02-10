@@ -6,6 +6,11 @@
 * REST APIs must be Hypertext Drive: https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven (**Veja o comentário 8**)
 * Richardson Maturity Model at QCon: https://www.crummy.com/writing/speaking/2008-QCon/act3.html
 
+* Todas as configurações do Quarkus: https://pt.quarkus.io/guides/all-config
+* Arquitetura BOLOVO: https://medium.com/codigorefinado/bolovo-voc%C3%AA-conhece-esse-modelo-de-arquitetura-de-software-1590c778f394
+* Quarkus Club Discord: https://discord.gg/4QezQNMT
+* Como instalar o JetBrains para o Windows: https://www.jetbrains.com/idea/download/?section=windows
+
 ---
 **NOTE**
 Não vimos na aula 2, vamos ver no início da aula 3.
