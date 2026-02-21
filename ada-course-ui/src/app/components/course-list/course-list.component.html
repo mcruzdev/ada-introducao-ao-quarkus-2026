@@ -1,0 +1,132 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Courses</h1>
+    <button
+      type="button"
+      (click)="navigateToCreate()"
+      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+      aria-label="Create new course"
+    >
+      Create course
+    </button>
+  </div>
+
+  @if (courses().length === 0) {
+    <div class="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
+      <p class="text-gray-600 dark:text-gray-300 text-lg mb-4">No courses available</p>
+      <button
+        type="button"
+        (click)="navigateToCreate()"
+        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+        aria-label="Create your first course"
+      >
+        Create your first course
+      </button>
+    </div>
+  } @else {
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-50 dark:bg-gray-700">
+          <tr>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider"
+            >
+              ID
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider"
+            >
+              Name
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider"
+            >
+              Lessons
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-right text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+          @for (course of courses(); track trackByCourseId($index, course)) {
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                {{ course.id }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <button
+                  type="button"
+                  (click)="navigateToDetail(course.id)"
+                  class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 focus:outline-none focus:underline"
+                  [attr.aria-label]="'View details for ' + course.name"
+                >
+                  {{ course.name }}
+                </button>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                {{ course.lessons.length }}
+                {{ course.lessons.length === 1 ? 'lesson' : 'lessons' }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                @if (deleteConfirmId() === course.id) {
+                  <div class="flex justify-end gap-2">
+                    <button
+                      type="button"
+                      (click)="deleteCourse(course.id)"
+                      class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
+                      [attr.aria-label]="'Confirm delete ' + course.name"
+                    >
+                      Confirm
+                    </button>
+                    <button
+                      type="button"
+                      (click)="cancelDelete()"
+                      class="px-3 py-1 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+                      aria-label="Cancel delete"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                } @else {
+                  <div class="flex justify-end gap-2">
+                    <button
+                      type="button"
+                      (click)="navigateToDetail(course.id)"
+                      class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 focus:outline-none focus:underline"
+                      [attr.aria-label]="'View ' + course.name"
+                    >
+                      View
+                    </button>
+                    <button
+                      type="button"
+                      (click)="navigateToEdit(course.id)"
+                      class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 focus:outline-none focus:underline"
+                      [attr.aria-label]="'Edit ' + course.name"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      (click)="confirmDelete(course.id)"
+                      class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 focus:outline-none focus:underline"
+                      [attr.aria-label]="'Delete ' + course.name"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

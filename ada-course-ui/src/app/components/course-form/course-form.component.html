@@ -1,0 +1,68 @@
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+  <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+      {{ isEditMode() ? 'Edit course' : 'Create course' }}
+    </h1>
+
+    @if (errorMessage()) {
+      <div
+        class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+        role="alert"
+        aria-live="polite"
+      >
+        <p class="text-red-800 dark:text-red-300">{{ errorMessage() }}</p>
+      </div>
+    }
+
+    <form [formGroup]="courseForm" (ngSubmit)="onSubmit()" novalidate>
+      <div class="mb-6">
+        <label for="courseName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Course name <span class="text-red-600" aria-label="required">*</span>
+        </label>
+        <input
+          id="courseName"
+          type="text"
+          formControlName="name"
+          [class]="
+            'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white ' +
+            (hasFieldError('name')
+              ? 'border-red-500 focus:ring-red-500'
+              : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500')
+          "
+          [attr.aria-invalid]="hasFieldError('name')"
+          [attr.aria-describedby]="hasFieldError('name') ? 'name-error' : null"
+          placeholder="Enter course name (minimum 3 characters)"
+        />
+        @if (hasFieldError('name')) {
+          <p id="name-error" class="mt-2 text-sm text-red-600" role="alert">
+            {{ getFieldError('name') }}
+          </p>
+        }
+      </div>
+
+      <div class="flex gap-4 justify-end">
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+          aria-label="Cancel and return to course list"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="courseForm.invalid"
+          [class]="
+            'px-6 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors ' +
+            (courseForm.invalid
+              ? 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+              : 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500')
+          "
+          [attr.aria-label]="isEditMode() ? 'Save course changes' : 'Create new course'"
+        >
+          {{ isEditMode() ? 'Save changes' : 'Create course' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

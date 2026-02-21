@@ -1,0 +1,213 @@
+<div class="container mx-auto px-4 py-8">
+  @if (course()) {
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+      <!-- Course Header -->
+      <div class="flex justify-between items-start mb-6">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{{ course()!.name }}</h1>
+          <p class="text-gray-600 dark:text-gray-400">Course ID: {{ course()!.id }}</p>
+        </div>
+        <div class="flex gap-2">
+          <button
+            type="button"
+            (click)="navigateToEdit()"
+            class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
+            [attr.aria-label]="'Edit ' + course()!.name"
+          >
+            Edit course
+          </button>
+          <button
+            type="button"
+            (click)="navigateToList()"
+            class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+            aria-label="Back to course list"
+          >
+            Back to list
+          </button>
+        </div>
+      </div>
+
+      <!-- Lessons Section -->
+      <div class="border-t pt-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+            Lessons ({{ lessons().length }})
+          </h2>
+          <button
+            type="button"
+            (click)="toggleLessonForm()"
+            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
+            [attr.aria-label]="showLessonForm() ? 'Cancel adding lesson' : 'Add new lesson'"
+          >
+            {{ showLessonForm() ? 'Cancel' : 'Add lesson' }}
+          </button>
+        </div>
+
+        <!-- Add Lesson Form -->
+        @if (showLessonForm()) {
+          <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">New lesson</h3>
+            <div class="flex gap-2">
+              <div class="flex-1">
+                <label for="lessonName" class="sr-only">Lesson name</label>
+                <input
+                  id="lessonName"
+                  type="text"
+                  [value]="lessonName()"
+                  (input)="onLessonNameChange($event)"
+                  (keydown.enter)="addLesson()"
+                  placeholder="Enter lesson name"
+                  [class]="
+                    'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors bg-white dark:bg-gray-800 text-gray-900 dark:text-white ' +
+                    (lessonError()
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-gray-300 dark:border-gray-600 focus:ring-green-500')
+                  "
+                  [attr.aria-invalid]="lessonError() !== null"
+                  [attr.aria-describedby]="lessonError() ? 'lesson-error' : null"
+                />
+                @if (lessonError()) {
+                  <p id="lesson-error" class="mt-2 text-sm text-red-600" role="alert">
+                    {{ lessonError() }}
+                  </p>
+                }
+              </div>
+              <button
+                type="button"
+                (click)="addLesson()"
+                class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
+                aria-label="Save new lesson"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- Lessons List -->
+        @if (lessons().length === 0) {
+          <div class="text-center py-12 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
+            <p class="text-gray-600 dark:text-gray-300 text-lg mb-4">No lessons yet</p>
+            <button
+              type="button"
+              (click)="toggleLessonForm()"
+              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors"
+              aria-label="Add your first lesson"
+            >
+              Add your first lesson
+            </button>
+          </div>
+        } @else {
+          <ul class="space-y-2" role="list">
+            @for (lesson of lessons(); track trackByLessonId($index, lesson)) {
+              <li
+                class="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+              >
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ lesson.id }}</span>
+                  <span class="text-gray-900 dark:text-white font-medium">{{ lesson.name }}</span>
+                </div>
+                @if (deleteLessonConfirmId() === lesson.id) {
+                  <div class="flex gap-2">
+                    <button
+                      type="button"
+                      (click)="deleteLesson(lesson.id)"
+                      class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
+                      [attr.aria-label]="'Confirm delete ' + lesson.name"
+                    >
+                      Confirm
+                    </button>
+                    <button
+                      type="button"
+                      (click)="cancelDeleteLesson()"
+                      class="px-3 py-1 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+                      aria-label="Cancel delete"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                } @else {
+                  <button
+                    type="button"
+                    (click)="confirmDeleteLesson(lesson.id)"
+                    class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 focus:outline-none focus:underline"
+                    [attr.aria-label]="'Delete ' + lesson.name"
+                  >
+                    Delete
+                  </button>
+                }
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+      <div class="text-center py-12">
+        <p class="text-gray-600 dark:text-gray-300 text-lg mb-4">Course not found</p>
+        <button
+          type="button"
+          (click)="navigateToList()"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+          aria-label="Return to course list"
+        >
+          Back to list
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Feature Not Available Alert Modal -->
+  @if (showFeatureNotAvailableAlert()) {
+    <div
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="alert-title"
+      (click)="closeFeatureNotAvailableAlert()"
+    >
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 max-w-md w-full mx-4"
+        (click)="$event.stopPropagation()"
+      >
+        <div class="flex items-start gap-4">
+          <div class="flex-shrink-0">
+            <svg
+              class="h-6 w-6 text-yellow-600 dark:text-yellow-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h3 id="alert-title" class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              Feature Not Available
+            </h3>
+            <p class="text-gray-600 dark:text-gray-300">
+              This feature is not available yet.
+            </p>
+          </div>
+        </div>
+        <div class="mt-6 flex justify-end">
+          <button
+            type="button"
+            (click)="closeFeatureNotAvailableAlert()"
+            class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors"
+            aria-label="Close alert"
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>
